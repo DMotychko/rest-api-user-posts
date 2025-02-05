@@ -8,3 +8,5 @@ export interface IToken {
 }
 
 export interface ITokenPair extends Pick<IToken, "accessToken" | "refreshToken"> {}
+
+export interface ITokenCreateDto extends Pick<IToken, "accessToken" | "refreshToken" | "_userId"> {}

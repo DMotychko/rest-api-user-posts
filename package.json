@@ -15,7 +15,6 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.9.6"
   },
-
   "author": "denis",
   "license": "ISC",
   "description": "",

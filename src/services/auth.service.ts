@@ -1,7 +1,11 @@
-import {IUser, IUserCreateDto, IUserResponseDto} from "../interfaces/user.interface";
+import {IUser, IUserCreateDto, IUserLoginDto, IUserResponseDto} from "../interfaces/user.interface";
 import {userService} from "./user.service";
 import {passwordService} from "./password.service";
 import {userRepository} from "../repositories/user.repository";
+import {ITokenPair} from "../interfaces/token.interface";
+import {ApiError} from "../errors/api-error";
+import {tokenService} from "./token.service";
+import {tokenRepository} from "../repositories/token.repository";
 
 
 class AuthService {
@@ -13,6 +17,26 @@ class AuthService {
         return {
             name: user.name,
             email: user.email
+        }
+    }
+
+    public async login (userDto: IUserLoginDto): Promise<{user: IUserResponseDto, tokens: ITokenPair}> {
+        const user = await userRepository.getByEmail(userDto.email)
+        const isPasswordCorrect = await passwordService.comparePassword(
+            userDto.password,
+            user.password
+        )
+        if (!isPasswordCorrect) {
+            throw new ApiError("Incorrect email or password", 401);
+        }
+        const tokens = tokenService.generateToken({userId: user._id, email: user.email})
+        await tokenRepository.create({...tokens, _userId: user._id})
+        return {
+            user: {
+                name: user.name,
+                email: user.email
+            },
+            tokens: tokens
         }
     }
 }
