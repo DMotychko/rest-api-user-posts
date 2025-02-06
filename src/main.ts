@@ -3,6 +3,7 @@ import {ApiError} from "./errors/api-error";
 import {config} from "./configs/config";
 import mongoose from "mongoose";
 import {authRouter} from "./routers/auth.router";
+import {userRouter} from "./routers/user.router";
 
 const app = express();
 
@@ -10,6 +11,7 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
 app.use('/auth', authRouter )
+app.use('/users', userRouter)
 
 app.get('/', (req: Request, res: Response) => {
     res.send('hello world')

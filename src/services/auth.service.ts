@@ -9,14 +9,19 @@ import {tokenRepository} from "../repositories/token.repository";
 
 
 class AuthService {
-    public async create (userDto: IUserCreateDto): Promise<IUserResponseDto> {
+    public async create (userDto: IUserCreateDto): Promise<{user: IUserResponseDto, tokens: ITokenPair}> {
         await userService.isEmailUnique(userDto.email)
         const password = await passwordService.hashPassword(userDto.password)
         const user: IUser = await userRepository.create({...userDto, password})
 
+        const tokens = tokenService.generateToken({userId: user._id})
+        await tokenRepository.create({...tokens, _userId: user._id})
         return {
-            name: user.name,
-            email: user.email
+            user: {
+                name: user.name,
+                email: user.email
+            },
+            tokens: tokens
         }
     }
 
@@ -29,7 +34,7 @@ class AuthService {
         if (!isPasswordCorrect) {
             throw new ApiError("Incorrect email or password", 401);
         }
-        const tokens = tokenService.generateToken({userId: user._id, email: user.email})
+        const tokens = tokenService.generateToken({userId: user._id})
         await tokenRepository.create({...tokens, _userId: user._id})
         return {
             user: {

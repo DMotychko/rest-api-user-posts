@@ -7,6 +7,10 @@ export interface IToken {
     updatedAt: Date
 }
 
+export interface ITokenPayload {
+    userId: string
+}
+
 export interface ITokenPair extends Pick<IToken, "accessToken" | "refreshToken"> {}
 
 export interface ITokenCreateDto extends Pick<IToken, "accessToken" | "refreshToken" | "_userId"> {}
