@@ -1,7 +1,7 @@
 import {ApiError} from "../errors/api-error";
 import {userRepository} from "../repositories/user.repository";
 import {ITokenPayload} from "../interfaces/token.interface";
-import { IUserForList, IUserResponseDto, IUserUpdatedDto} from "../interfaces/user.interface";
+import {IGetUserDto, IUser, IUserForList, IUserResponseDto, IUserUpdatedDto} from "../interfaces/user.interface";
 
 
 class UserService {
@@ -32,6 +32,17 @@ class UserService {
         return user.map(user => (
             {name: user.name, email: user.email, _id: user._id}
         ))
+    }
+
+    public async getUser(dto: IGetUserDto): Promise<IUserResponseDto> {
+        const {id, email} = dto
+        let result: IUser
+        if (id) {
+            result = await userRepository.getById(id)
+        } else {
+            result =  await userRepository.getByEmail(email)
+        }
+        return {name: result.name, email: result.email}
     }
 }
 

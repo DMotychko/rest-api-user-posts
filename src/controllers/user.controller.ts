@@ -1,7 +1,7 @@
 import {NextFunction, Request, Response} from "express";
 import {ITokenPayload} from "../interfaces/token.interface";
 import {userService} from "../services/user.service";
-import {IUserUpdatedDto} from "../interfaces/user.interface";
+import {IGetUserDto, IUserUpdatedDto} from "../interfaces/user.interface";
 
 
 class UserController {
@@ -29,6 +29,16 @@ class UserController {
     public async getList (req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
             const result = await userService.getList()
+            res.status(200).json(result)
+        } catch (e) {
+            next(e)
+        }
+    }
+
+    public async getUser (req: Request, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const query = req.query as IGetUserDto
+            const result = await userService.getUser(query)
             res.status(200).json(result)
         } catch (e) {
             next(e)

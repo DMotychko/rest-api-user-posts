@@ -16,3 +16,8 @@ export interface IUserLoginDto extends Pick<IUser, "email" | "password"> {}
 export interface IUserUpdatedDto extends Pick<IUser, "name"> {}
 
 export interface IUserForList extends Pick<IUser, "name" | "_id" | "email"> {}
+
+export interface IGetUserDto {
+    id?: string,
+    email?: string,
+}

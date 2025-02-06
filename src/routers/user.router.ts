@@ -8,6 +8,8 @@ router.delete('/deleteMe', tokenMiddleware.checkAccessToken, userController.dele
 
 router.patch('/updatedMe', tokenMiddleware.checkAccessToken, userController.updatedMe)
 
-router.get("/", tokenMiddleware.checkAccessToken, userController.getList)
+router.get("/getList", tokenMiddleware.checkAccessToken, userController.getList)
+
+router.get("/getUser", tokenMiddleware.checkAccessToken, userController.getUser)
 
 export const userRouter = router
