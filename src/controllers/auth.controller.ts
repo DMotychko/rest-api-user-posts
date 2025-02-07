@@ -35,6 +35,16 @@ class AuthController {
         }
     }
 
+    public async logout (req: Request, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const refreshToken = res.locals.refreshToken as string
+            await authService.logout(refreshToken)
+            res.status(204)
+        } catch (e) {
+            next(e)
+        }
+    }
+
 }
 
 export const authController = new AuthController()

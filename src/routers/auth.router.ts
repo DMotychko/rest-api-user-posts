@@ -10,4 +10,6 @@ router.post('/login', authController.login)
 
 router.get('/refresh', tokenMiddleware.checkRefreshToken, authController.refresh)
 
+router.delete('/logout', tokenMiddleware.checkRefreshToken, authController.logout)
+
 export const authRouter = router

@@ -51,6 +51,10 @@ class AuthService {
         await tokenRepository.create({...tokens, _userId: tokenPayload.userId})
         return tokens
     }
+
+    public async logout (refreshToken: string): Promise<void> {
+        await tokenRepository.deleteByParams({refreshToken})
+    }
 }
 
 export const authService = new AuthService();
