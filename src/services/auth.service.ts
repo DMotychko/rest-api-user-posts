@@ -2,7 +2,7 @@ import {IUser, IUserCreateDto, IUserLoginDto, IUserResponseDto} from "../interfa
 import {userService} from "./user.service";
 import {passwordService} from "./password.service";
 import {userRepository} from "../repositories/user.repository";
-import {ITokenPair} from "../interfaces/token.interface";
+import {ITokenPair, ITokenPayload} from "../interfaces/token.interface";
 import {ApiError} from "../errors/api-error";
 import {tokenService} from "./token.service";
 import {tokenRepository} from "../repositories/token.repository";
@@ -43,6 +43,13 @@ class AuthService {
             },
             tokens: tokens
         }
+    }
+
+    public async refresh (tokenPayload: ITokenPayload, refreshToken: string): Promise<ITokenPair> {
+        await tokenRepository.deleteByParams({refreshToken})
+        const tokens = tokenService.generateToken({userId: tokenPayload.userId})
+        await tokenRepository.create({...tokens, _userId: tokenPayload.userId})
+        return tokens
     }
 }
 
