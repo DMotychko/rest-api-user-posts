@@ -1,5 +1,5 @@
 import {ITokenPayload} from "../interfaces/token.interface";
-import {IPost, IPostCreateBody, IPostCreateDto} from "../interfaces/post.interface";
+import {IPost, IPostCreateBody, IPostCreateDto, IPostUpdateBody} from "../interfaces/post.interface";
 import {postRepository} from "../repositories/post.repository";
 import {ApiError} from "../errors/api-error";
 
@@ -27,7 +27,7 @@ class PostService {
         await postRepository.deleteById(postId)
     }
 
-    public async updated (postId: string, tokenPayload: ITokenPayload, dto: IPostCreateBody): Promise<IPost> {
+    public async updated (postId: string, tokenPayload: ITokenPayload, dto: IPostUpdateBody): Promise<IPost> {
         const post = await postRepository.getPostById(postId)
         if(!post) {
             throw new ApiError("Post not found", 404)

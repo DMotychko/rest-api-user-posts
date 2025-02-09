@@ -1,4 +1,4 @@
-import {IPost, IPostCreateBody, IPostCreateDto} from "../interfaces/post.interface";
+import {IPost, IPostCreateDto, IPostUpdateBody} from "../interfaces/post.interface";
 import {Post} from "../models/post.model";
 
 
@@ -19,7 +19,7 @@ class PostRepository {
         return await Post.findByIdAndDelete(_id)
     }
 
-    public async updatedById(_id: string, dto: IPostCreateBody): Promise<IPost> {
+    public async updatedById(_id: string, dto: IPostUpdateBody): Promise<IPost> {
         return await Post.findByIdAndUpdate(_id, dto, {new: true})
     }
 }

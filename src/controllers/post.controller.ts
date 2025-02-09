@@ -1,7 +1,7 @@
 import {NextFunction, Request, Response} from "express";
 import {ITokenPayload} from "../interfaces/token.interface";
 import {postService} from "../services/post.service";
-import {IPostCreateBody} from "../interfaces/post.interface";
+import {IPostCreateBody, IPostUpdateBody} from "../interfaces/post.interface";
 
 
 class PostController {
@@ -39,7 +39,7 @@ class PostController {
     public async updated (req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
             const postId = req.params.postId
-            const dto = req.body as IPostCreateBody
+            const dto = req.body as IPostUpdateBody
             const tokenPayload = res.locals.tokenPayload as ITokenPayload
             const result = await postService.updated(postId, tokenPayload, dto)
             res.status(200).json(result)

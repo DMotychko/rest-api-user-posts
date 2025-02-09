@@ -8,29 +8,33 @@
       "email": "test@gmail.com"
     }
   },
-  "host": "0.0.0.0:3005",
+  "host": "0.0.0.0:3000",
   "tags": [
     {
       "name": "user",
       "description": "Operations about user"
     },
     {
-      "name": "auth"
+      "name": "auth",
+      "description": "Operations about user"
+    },
+    {
+      "name": "posts",
+      "description": "Operations about posts"
     }
   ],
   "schemes": [
     "http"
   ],
   "paths": {
-    "/users/me": {
+    "/users/getUser": {
       "get": {
         "tags": ["user"],
-        "summary": "Get me",
+        "summary": "Get user",
         "description": "This can only be done by the logged in user.",
-        "operationId": "getMyUser",
+        "operationId": "getUser",
         "produces": [
-          "application/json",
-          "application/xml"
+          "application/json"
         ],
         "security": [{"BearerAuth": []}],
         "responses": {
@@ -57,8 +61,7 @@
           "application/json"
         ],
         "produces": [
-          "application/json",
-          "application/xml"
+          "application/json"
         ],
         "security": [{"BearerAuth": []}],
         "parameters": [
@@ -96,8 +99,7 @@
         "operationId": "deleteUser",
         "security": [{"BearerAuth": []}],
         "produces": [
-          "application/json",
-          "application/xml"
+          "application/json"
         ],
         "parameters": [
           {
@@ -134,8 +136,7 @@
           "application/json"
         ],
         "produces": [
-          "application/json",
-          "application/xml"
+          "application/json"
         ],
         "parameters": [
           {

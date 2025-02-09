@@ -20,7 +20,7 @@ class UserController {
             const tokenPayload = req.res.locals.tokenPayload as ITokenPayload;
             const dto = req.body as IUserUpdatedDto
             const result = await userService.updatedMe(tokenPayload, dto)
-            res.status(200).json({name: result.name, email: result.email})
+            res.status(200).json(result)
         } catch (e) {
             next(e)
         }
