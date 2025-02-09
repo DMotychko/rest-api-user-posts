@@ -17,11 +17,8 @@ class AuthService {
         const tokens = tokenService.generateToken({userId: user._id})
         await tokenRepository.create({...tokens, _userId: user._id})
         return {
-            user: {
-                name: user.name,
-                email: user.email
-            },
-            tokens: tokens
+            user,
+            tokens
         }
     }
 
@@ -37,11 +34,8 @@ class AuthService {
         const tokens = tokenService.generateToken({userId: user._id})
         await tokenRepository.create({...tokens, _userId: user._id})
         return {
-            user: {
-                name: user.name,
-                email: user.email
-            },
-            tokens: tokens
+            user,
+            tokens
         }
     }
 

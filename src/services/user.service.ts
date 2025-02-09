@@ -1,8 +1,7 @@
 import {ApiError} from "../errors/api-error";
 import {userRepository} from "../repositories/user.repository";
 import {ITokenPayload} from "../interfaces/token.interface";
-import {IGetUserDto, IUser, IUserForList, IUserResponseDto, IUserUpdatedDto} from "../interfaces/user.interface";
-
+import {IGetUserDto, IUser, IUserResponseDto, IUserUpdatedDto} from "../interfaces/user.interface";
 
 class UserService {
     public async isEmailUnique(email: string): Promise<void> {
@@ -11,12 +10,12 @@ class UserService {
             throw new ApiError("Email is already in use", 409)
         }
     }
-    public async deleteMe(dto: ITokenPayload): Promise<void> {
+    public async deleteMe(dto: ITokenPayload): Promise<IUser> {
         const user = await userRepository.getById(dto.userId)
         if(!user) {
             throw new ApiError("User not found", 404)
         }
-        await userRepository.deleteById(dto.userId)
+        return await userRepository.deleteById(dto.userId)
     }
 
     public async updatedMe(tokenPayload: ITokenPayload, dto: IUserUpdatedDto): Promise<IUserResponseDto> {
@@ -27,22 +26,23 @@ class UserService {
         return await userRepository.updatedById(user._id, dto);
     }
 
-    public async getList(): Promise<IUserForList[]> {
-        const user = await userRepository.getList()
-        return user.map(user => (
-            {name: user.name, email: user.email, _id: user._id}
-        ))
+    public async getList(): Promise<IUserResponseDto[]> {
+        return await userRepository.getList()
     }
 
     public async getUser(dto: IGetUserDto): Promise<IUserResponseDto> {
         const {id, email} = dto
-        let result: IUser
+        let result: IUserResponseDto
         if (id) {
             result = await userRepository.getById(id)
         } else {
             result =  await userRepository.getByEmail(email)
         }
-        return {name: result.name, email: result.email}
+        return result
+    }
+
+    public async filterByName (name: string): Promise<IUserResponseDto[]> {
+        return await userRepository.filterByName(name)
     }
 }
 

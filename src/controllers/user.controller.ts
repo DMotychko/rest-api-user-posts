@@ -44,6 +44,16 @@ class UserController {
             next(e)
         }
     }
+
+    public async filterByName(req: Request, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const query = req.query.name as string
+            const result = await userService.filterByName(query)
+            res.status(200).json(result)
+        } catch (e) {
+            next(e)
+        }
+    }
 }
 
 export const userController = new UserController()

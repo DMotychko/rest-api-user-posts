@@ -12,4 +12,6 @@ router.get("/getList", tokenMiddleware.checkAccessToken, userController.getList)
 
 router.get("/getUser", tokenMiddleware.checkAccessToken, userController.getUser)
 
+router.get('/filterByName', userController.filterByName)
+
 export const userRouter = router
