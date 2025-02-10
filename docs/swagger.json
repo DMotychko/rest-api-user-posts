@@ -1,14 +1,18 @@
 {
   "swagger": "2.0",
   "info": {
-    "description": "This api is for testing the swagger ui",
+    "description": "This API is for testing the Swagger UI",
     "version": "1.0.7",
     "title": "Express API",
     "contact": {
       "email": "test@gmail.com"
     }
   },
-  "host": "0.0.0.0:3000",
+  "host": "localhost:3000",
+  "basePath": "/",
+  "schemes": [
+    "http"
+  ],
   "tags": [
     {
       "name": "user",
@@ -16,54 +20,56 @@
     },
     {
       "name": "auth",
-      "description": "Operations about user"
+      "description": "Operations about auth"
     },
     {
-      "name": "posts",
-      "description": "Operations about posts"
+      "name": "post",
+      "description": "Operations about post"
     }
   ],
-  "schemes": [
-    "http"
-  ],
   "paths": {
-    "/users/getUser": {
-      "get": {
-        "tags": ["user"],
-        "summary": "Get user",
-        "description": "This can only be done by the logged in user.",
-        "operationId": "getUser",
-        "produces": [
+    "/users/deleteMe": {
+      "delete": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Delete user",
+        "description": "Delete user of users by token",
+        "operationId": "deleteMe",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "consumes": [
           "application/json"
         ],
-        "security": [{"BearerAuth": []}],
         "responses": {
-          "200": {
-            "description": "successful operation",
-            "schema": {
-              "$ref": "#/definitions/PrivateUserResponse"
-            }
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "404": {
-            "description": "User not found"
+          "204": {
+            "description": "User deleted"
           }
         }
-      },
-      "put": {
-        "tags": ["user"],
-        "summary": "Update me",
-        "description": "This can only be done by the logged in user.",
-        "operationId": "updateMyUser",
+      }
+    },
+    "/users/updatedMe": {
+      "patch": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Updated user",
+        "description": "Updated user by token and body",
+        "operationId": "UpdatedMe",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
         "consumes": [
           "application/json"
         ],
         "produces": [
           "application/json"
         ],
-        "security": [{"BearerAuth": []}],
         "parameters": [
           {
             "in": "body",
@@ -75,63 +81,90 @@
           }
         ],
         "responses": {
-          "201": {
-            "description": "successful operation",
+          "200": {
+            "description": "User updated",
             "schema": {
-              "$ref": "#/definitions/PrivateUserResponse"
+              "$ref": "#/definitions/UserUpdated"
             }
-          },
-          "400": {
-            "description": "Invalid user supplied"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "404": {
-            "description": "User not found"
-          }
-        }
-      },
-      "delete": {
-        "tags": ["user"],
-        "summary": "Delete user",
-        "description": "This can only be done by the logged in user.",
-        "operationId": "deleteUser",
-        "security": [{"BearerAuth": []}],
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "username",
-            "in": "path",
-            "description": "The name that needs to be deleted",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "successful operation",
-            "schema": {
-              "$ref": "#/definitions/PrivateUserResponse"
-            }
-          },
-          "400": {
-            "description": "Invalid username supplied"
-          },
-          "404": {
-            "description": "User not found"
           }
         }
       }
     },
-    "/users": {
-      "post": {
+    "/users/getList": {
+      "get": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Get list of user",
+        "description": "Get list of users by token",
+        "operationId": "getList",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/UserList"
+            }
+          }
+        }
+      }
+    },
+    "/users/getUser": {
+      "get": {
+        "summary": "get user",
+        "description": "Get user by query params",
+        "operationId": "getUserByParams",
         "tags": ["user"],
-        "summary": "Create user",
-        "description": "This can only be done by the logged in user.",
-        "operationId": "createUser",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "description": "Get user by id",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "email",
+            "in": "query",
+            "description": "Get user by email",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/UserUpdated"
+            }
+          }
+        }
+      }
+    },
+    "/users/filterByName": {
+      "get": {
+        "tags": [
+          "user"
+        ],
+        "summary": "Get list of user by name",
+        "description": "Get list of users by name without token, you must write name in query",
+        "operationId": "getListByName",
         "consumes": [
           "application/json"
         ],
@@ -140,83 +173,474 @@
         ],
         "parameters": [
           {
-            "in": "body",
-            "name": "body",
-            "description": "Created user object",
+            "name": "name",
+            "in": "query",
+            "description": "Get user by name",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/PrivateUserResponse"
+              "type": "string"
             }
           }
         ],
         "responses": {
-          "default": {
-            "description": "successful operation"
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/UserList"
+            }
+          }
+        }
+      }
+    },
+    "/posts/create": {
+      "post": {
+        "tags": ["post"],
+        "summary": "Create a new post",
+        "description": "Creates a new post with title and body",
+        "operationId": "createPost",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/CreatePostDTO"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Post created successfully",
+            "schema": {
+              "$ref": "#/definitions/Post"
+            }
+          }
+        }
+      }
+    },
+    "/posts/userPosts/{userId}": {
+      "get": {
+        "tags": ["post"],
+        "summary": "Get posts by user ID",
+        "description": "Fetch all posts created by a specific user using their user ID",
+        "operationId": "getUserPosts",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "description": "User ID whose posts are to be fetched",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of posts",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Post"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/posts/delete/{postId}": {
+      "delete": {
+        "tags": ["post"],
+        "summary": "Delete post by ID",
+        "description": "Delete a specific post using its ID",
+        "operationId": "deletePost",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "postId",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the post to be deleted",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Post successfully deleted"
+          }
+        }
+      }
+    },
+    "/posts/updated/{postId}": {
+      "patch": {
+        "tags": ["post"],
+        "summary": "Update a post",
+        "description": "Update a specific post by its ID. Requires authentication.",
+        "operationId": "updatePost",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "postId",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the post to update",
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "description": "Post update data (at least one field required: title or body)",
+            "schema": {
+              "$ref": "#/definitions/UpdatePostDTO"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Post updated successfully",
+            "schema": {
+              "$ref": "#/definitions/Post"
+            }
+          }
+        }
+      }
+    },
+    "/auth/create": {
+      "post": {
+        "tags": ["auth"],
+        "summary": "Create a new user",
+        "description": "Register a new user with a name, email, and password.",
+        "operationId": "createUser",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "description": "User registration data",
+            "schema": {
+              "$ref": "#/definitions/CreateUserDTO"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "User created successfully",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": ["auth"],
+        "summary": "User login",
+        "description": "Authenticate user and return access and refresh tokens along with user data.",
+        "operationId": "loginUser",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "description": "User login credentials",
+            "schema": {
+              "$ref": "#/definitions/LoginDTO"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User authenticated successfully",
+            "schema": {
+              "$ref": "#/definitions/LoginResponse"
+            }
+          }
+        }
+      }
+    },
+    "/auth/refresh": {
+      "get": {
+        "tags": ["auth"],
+        "summary": "Refresh access token",
+        "description": "Generates a new access token using the provided refresh token. This endpoint requires authentication with a refresh token.",
+        "operationId": "refreshToken",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "New tokens generated successfully",
+            "schema": {
+              "$ref": "#/definitions/TokenResponse"
+            }
+          }
+        }
+      }
+    },
+    "/auth/logout": {
+      "delete": {
+        "tags": ["auth"],
+        "summary": "User logout",
+        "description": "Logs out the user by invalidating the refresh token. This endpoint requires authentication with a refresh token.",
+        "operationId": "logoutUser",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "User logged out successfully, tokens invalidated"
           }
         }
       }
     }
+
+
+
+
+
+
+
+  },
+  "definitions": {
+    "UserList": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+    },
+    "UserUpdated": {
+      "type": "object",
+      "properties": {
+        "_id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string",
+          "format": "email"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "UpdateUserDTO": {
+      "type": "object",
+      "required": ["name"],
+      "properties": {
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "CreatePostDTO": {
+      "type": "object",
+      "required": ["title", "body"],
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "body": {
+          "type": "string"
+        }
+      }
+    },
+    "Post": {
+      "type": "object",
+      "properties": {
+        "_id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "body": {
+          "type": "string"
+        },
+        "_userId": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "UpdatePostDTO": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "body": {
+          "type": "string"
+        }
+      },
+      "minProperties": 1
+    },
+    "CreateUserDTO": {
+      "type": "object",
+      "required": ["name", "email", "password"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 3,
+          "description": "User's name (at least 3 characters)",
+          "example": "John Doe"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "Valid email address",
+          "example": "johndoe@example.com"
+        },
+        "password": {
+          "type": "string",
+          "description": "Strong password (at least one uppercase, one lowercase, one digit, and one special character)",
+          "example": "P@ssw0rd!"
+        }
+      }
+    },
+    "User": {
+      "type": "object",
+      "properties": {
+        "_id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string",
+          "format": "email"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "LoginDTO": {
+      "type": "object",
+      "required": ["email", "password"],
+      "properties": {
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "User's email address",
+          "example": "johndoe@example.com"
+        },
+        "password": {
+          "type": "string",
+          "description": "User's password",
+          "example": "P@ssw0rd!"
+        }
+      }
+    },
+    "LoginResponse": {
+      "type": "object",
+      "properties": {
+        "tokens": {
+          "type": "object",
+          "properties": {
+            "accessToken": {
+              "type": "string",
+              "description": "JWT access token",
+              "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+            },
+            "refreshToken": {
+              "type": "string",
+              "description": "JWT refresh token",
+              "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+            }
+          }
+        },
+        "user": {
+          "$ref": "#/definitions/User"
+        }
+      }
+    },
+    "TokenResponse": {
+      "type": "object",
+      "properties": {
+        "accessToken": {
+          "type": "string",
+          "description": "New JWT access token",
+          "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        },
+        "refreshToken": {
+          "type": "string",
+          "description": "New JWT refresh token",
+          "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        }
+      }
+    }
+
+
+
+
+
+
   },
   "securityDefinitions": {
     "BearerAuth": {
       "type": "apiKey",
       "in": "header",
       "name": "Authorization"
-    }
-  },
-  "definitions": {
-    "UpdateUserDTO": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "description": "Updated name in the system",
-          "type": "string"
-        },
-        "phone": {
-          "description": "Updated phone number in the system",
-          "type": "string"
-        },
-        "age": {
-          "description": "Age in years",
-          "type": "number"
-        }
-      }
-    },
-    "PrivateUserResponse": {
-      "type": "object",
-      "required": ["_id", "name", "email", "role", "isDeleted", "isVerified"],
-      "properties": {
-        "_id": {
-          "type": "string",
-          "format": "uuid",
-          "description": "The unique identifier for a user"
-        },
-        "name": {
-          "type": "string"
-        },
-        "email": {
-          "type": "string"
-        },
-        "age": {
-          "type": "number"
-        },
-        "phone": {
-          "type": "string"
-        },
-        "avatar": {
-          "type": "string"
-        },
-        "role": {
-          "type": "string",
-          "enum": ["admin", "user"]
-        },
-        "isDeleted": {
-          "type": "boolean"
-        },
-        "isVerified": {
-          "type": "boolean"
-        }
-      }
     }
   }
 }

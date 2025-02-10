@@ -24,6 +24,9 @@ class AuthService {
 
     public async login (userDto: IUserLoginDto): Promise<{user: IUserResponseDto, tokens: ITokenPair}> {
         const user = await userRepository.getByEmail(userDto.email)
+        if (!user || !user.password) {
+            throw new ApiError("User not found or password missing", 400);
+        }
         const isPasswordCorrect = await passwordService.comparePassword(
             userDto.password,
             user.password

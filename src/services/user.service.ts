@@ -2,6 +2,7 @@ import {ApiError} from "../errors/api-error";
 import {userRepository} from "../repositories/user.repository";
 import {ITokenPayload} from "../interfaces/token.interface";
 import {IGetUserDto, IUser, IUserResponseDto, IUserUpdatedDto} from "../interfaces/user.interface";
+import mongoose from "mongoose";
 
 class UserService {
     public async isEmailUnique(email: string): Promise<void> {
@@ -34,11 +35,20 @@ class UserService {
         const {id, email} = dto
         let result: IUserResponseDto
         if (id) {
+            if (!mongoose.Types.ObjectId.isValid(id)) {
+                throw new ApiError("Invalid ID format", 400);
+            }
             result = await userRepository.getById(id)
         } else {
             result =  await userRepository.getByEmail(email)
         }
-        return result
+        return {
+            _id: result._id,
+            name: result.name,
+            email: result.email,
+            createdAt: result.createdAt,
+            updatedAt: result.updatedAt
+        }
     }
 
     public async filterByName (name: string): Promise<IUserResponseDto[]> {

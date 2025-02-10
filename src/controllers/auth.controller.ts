@@ -39,7 +39,7 @@ class AuthController {
         try {
             const refreshToken = res.locals.refreshToken as string
             await authService.logout(refreshToken)
-            res.status(204)
+            res.sendStatus(204)
         } catch (e) {
             next(e)
         }
