@@ -8,7 +8,7 @@
       "email": "test@gmail.com"
     }
   },
-  "host": "localhost:3000",
+  "host": "http://localhost:3000",
   "basePath": "/",
   "schemes": [
     "http"
