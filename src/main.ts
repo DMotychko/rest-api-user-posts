@@ -8,7 +8,6 @@ import {userRouter} from "./routers/user.router";
 import {postRouter} from "./routers/post.router";
 import swaggerDocument from '../docs/swagger.json'
 
-
 const app = express();
 
 app.use(express.json());
