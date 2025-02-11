@@ -18,9 +18,6 @@ app.use('/auth', authRouter )
 app.use('/users', userRouter)
 app.use('/posts', postRouter)
 
-const SERVER_URL = process.env.SERVER_URL || "http://localhost:3000";
-
-swaggerDocument.host = SERVER_URL
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.get('/', (req: Request, res: Response) => {
